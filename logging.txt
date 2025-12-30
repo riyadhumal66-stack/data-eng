@@ -1,0 +1,104 @@
+from logger_config import log_confis
+
+logger = log_confis(str(__file__).split("\\")[-1])
+
+def file_read(filename):
+    try:
+        with open(filename) as fp:
+            data = fp.read()
+            logger.info("file reading successfully")
+        return data
+
+    except Exception as e:
+        logger.error(e)
+
+def file_write(filename):
+    pass
+
+def main():
+    logger.info("Entering into main..Started")
+    file = 'test.qqwewrawrcsv'
+    logger.info("File Selected {}".format(file))
+    logger.info("file reading started..")
+    file_read(file)
+
+
+if __name__=='__main__':
+    main()
+
+
+
+log_config.py
+
+import logging
+
+
+def log_confis(modulename):
+    logging.basicConfig(filename='server_offline9.log',
+                    level=10,
+                    format='%(asctime)s : %(levelname)s :%(name)s :%(message)s',
+                    datefmt='%d:%m:%Y %H:%M:%S')
+    logger = logging.getLogger("{}".format(modulename))
+    return logger
+
+
+
+
+
+
+
+
+import os
+import logging
+from filter_csv_files import csv_files_filter
+
+logging.basicConfig(filename="offline8.log",level=10,
+                    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
+                    datefmt='%d-%B-%y %H-%M-%S %p'
+                    )
+
+logger = logging.getLogger("main.py")
+
+def read_from_source(filename,destination,sd):
+    try:
+        with open(r'sadasdsa{}/{}'.format(sd,filename)) as fp:
+            data =  fp.read()
+        copy_to_destination(filename,data,destination)
+
+    except Exception as e:
+        logger.exception(e)
+
+def copy_to_destination(fn,data,destination):
+    with open(r"{}/{}".format(destination,fn),"w") as fp:
+        fp.write(data)
+    return True
+
+
+def delete_from_source(fn,sd):
+    try:
+        os.remove(r"{}/{}".format(sd,fn))
+    except Exception as e:
+        logger.exception(e)
+
+def main():
+    logger.info("Main function started.....")
+    sourcedir = 'source'
+    destinationdir = "destination"
+    logger.info("source selected {} and destination {}".format(sourcedir,destinationdir))
+    csv_files = csv_files_filter(sourcedir)
+    logger.info("total csv files found:{}".format(len(csv_files)))
+    if len(csv_files)<1:
+        logger.info("No files csv file to Move so Stopping process")
+    else:
+
+        for file in csv_files:
+            logger.info("file ready to move {}".format(file))
+            read_from_source(file,destinationdir,sourcedir)
+            logger.info("file {} copied to {}".format(file,destinationdir))
+            delete_from_source(file,sourcedir)
+        logger.info("all files successfully moved from {} to {}".format(sourcedir,destinationdir))
+    logger.info("Process End....")
+if __name__=='__main__':
+    main()
+
+
